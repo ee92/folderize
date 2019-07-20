@@ -8,7 +8,7 @@ import {
 
 import {Context, Option} from './types';
 import {stringRegex, importRegex} from './regex';
-import {extraOptions} from './options';
+import {options} from './options';
 import {formatIndex, formatImportPath} from './format';
 
 const createEmptyFolder = (c: Context) => {
@@ -56,7 +56,7 @@ const createFolder = (context: Context, options: Option[]) => {
 
 const showOptions = (context: Context) => {
 	return vscode.window.showQuickPick(
-		extraOptions(context),
+		options(context),
 		{
 			placeHolder: 'generate additional files',
 			canPickMany: true,

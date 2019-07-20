@@ -1,6 +1,6 @@
 import {Context} from '../types';
 
-export const extraOptions = (c: Context) => [
+export const options = (c: Context) => [
 	{	
 		'id': 'test',
 		'label': 'Generate test file',

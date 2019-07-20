@@ -1,3 +1,1 @@
-import options from '../options';
-
-export default options;
+export * from './options';
