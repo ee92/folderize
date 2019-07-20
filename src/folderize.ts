@@ -80,11 +80,10 @@ export const init = (event: vscode.Uri) => {
 		newPath
 	};
 	
-   showOptions(context)
-   .then((selectedOptions) => {
-      if (selectedOptions === undefined) {
-         return;
+   showOptions(context).then((selectedOptions) => {
+   	if (selectedOptions === undefined) {
+      	return; // cancelled
       }
-      createFolder(context, selectedOptions);
+   	createFolder(context, selectedOptions);
    });
 };
