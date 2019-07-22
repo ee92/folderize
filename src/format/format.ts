@@ -1,8 +1,8 @@
-export const formatIndex = (name: string, exportAll: boolean) => {
+export const formatIndexFile = (name: string, exportAll: boolean) => {
 	if (exportAll) {
 		return `export * from './${name}';`;
 	}
-	return `import ${name} from '../${name}';\n\nexport default ${name};`;
+	return `import ${name} from './${name}';\n\nexport default ${name};`;
 };
 
 export const formatImportPath = (s: string) => {
