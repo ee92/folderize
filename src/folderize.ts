@@ -23,7 +23,6 @@ const createIndexFile = (c: Context, o: Option[]) => {
 	const exportAll = o.some(option => option.id === 'export_all');
 	const indexPath = c.folderPath + '/index.' + c.filePath;
 	const indexText = formatIndexFile(c.fileName, exportAll);
-	console.log('index text: ', indexText);
 	writeFileSync(indexPath, indexText);
 };
 
