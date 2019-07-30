@@ -2,7 +2,7 @@
 	"name": "folderize",
 	"displayName": "folderize",
 	"description": "Easily convert a Javascript file into a folder with an index file without breaking imports / exports. Supports .js, .jsx, .ts, .tsx.",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "ee92",
 	"repository": "https://github.com/ee92/folderize",
 	"icon": "assets/logo.png",
