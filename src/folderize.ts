@@ -7,9 +7,9 @@ import {
 } from 'fs';
 
 import {Context, Option} from './types';
-import {stringRegex, importRegex} from './regex';
 import {getOptions} from './options';
-import {formatIndexFile, formatImportPath} from './format';
+import {stringRegex, importRegex, firstEmptyLineRegex} from './regex';
+import {formatIndexFile, formatImportPath, formatCssImport} from './format';
 
 const createEmptyFolder = (c: Context) => {
 	mkdirSync(c.folderPath);
@@ -20,19 +20,25 @@ const moveFileIntoFolder = (c: Context) => {
 };
 
 const createIndexFile = (c: Context, o: Option[]) => {
-	const exportAll = o.some(option => option.id === 'export_all');
 	const indexPath = c.folderPath + '/index.' + c.filePath;
-	const indexText = formatIndexFile(c.fileName, exportAll);
+	const indexText = formatIndexFile(c.fileName);
 	writeFileSync(indexPath, indexText);
 };
 
-const updateLocalImports = (path: string) => {
-	const text = readFileSync(path, 'utf-8');
-	const updatedText = text.replace(importRegex, (match) => {
+const updateLocalImports = (c: Context, o: Option[]) => {
+	const text = readFileSync(c.newPath, 'utf-8');
+	console.log(text);
+	let updatedText = text.replace(importRegex, (match) => {
 		const newPath = match.replace(stringRegex, formatImportPath);
 		return newPath;
 	});
-	writeFileSync(path, updatedText);
+	const importCss = o.some(option => option.id === 'css_module');
+	if (importCss) {
+		updatedText = updatedText.replace(firstEmptyLineRegex, () => {
+			return formatCssImport(c.fileName);
+		});
+	}
+	writeFileSync(c.newPath, updatedText);
 };
 
 const createOptionalFiles = (c: Context, o: Option[]) => {
@@ -50,7 +56,7 @@ const createFolder = (context: Context, options: Option[]) => {
 	moveFileIntoFolder(context);
 	createIndexFile(context, options);
 	createOptionalFiles(context, options);
-	updateLocalImports(context.newPath);
+	updateLocalImports(context, options);
 };
 
 const showOptions = (context: Context) => {
@@ -80,10 +86,8 @@ export const init = (event: vscode.Uri) => {
 	};
 	
    showOptions(context).then((selectedOptions) => {
-		console.log('hi?');
-   	if (selectedOptions === undefined) {
-      	return; // cancelled
+   	if (selectedOptions) {
+      	createFolder(context, selectedOptions);
       }
-   	createFolder(context, selectedOptions);
    });
 };
