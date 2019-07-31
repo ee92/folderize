@@ -53,9 +53,9 @@ const createOptionalFiles = (c: Context, o: Option[]) => {
 
 const createFolder = (context: Context, options: Option[]) => {
 	createEmptyFolder(context);
-	moveFileIntoFolder(context);
 	createIndexFile(context, options);
 	createOptionalFiles(context, options);
+	moveFileIntoFolder(context);
 	updateLocalImports(context, options);
 };
 
