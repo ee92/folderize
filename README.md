@@ -2,3 +2,6 @@
 turn javascript files into folders
 
 ![](demo/demo.gif)
+
+### License
+MIT
