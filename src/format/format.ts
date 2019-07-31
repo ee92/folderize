@@ -1,5 +1,5 @@
 export const formatIndexFile = (name: string) => {
-	return `import ${name} from './${name}';\n\nexport default ${name};`;
+	return `import { default } from './${name}';\n`
 };
 
 export const formatCssImport = (name: string) => {
