@@ -27,7 +27,6 @@ const createIndexFile = (c: Context, o: Option[]) => {
 
 const updateLocalImports = (c: Context, o: Option[]) => {
 	const text = readFileSync(c.newPath, 'utf-8');
-	console.log(text);
 	let updatedText = text.replace(importRegex, (match) => {
 		const newPath = match.replace(stringRegex, formatImportPath);
 		return newPath;
