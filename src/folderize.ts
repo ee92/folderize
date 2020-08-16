@@ -1,15 +1,15 @@
 import * as vscode from 'vscode';
 import {
-   mkdirSync,
-   readFileSync,
-   writeFileSync,
-   renameSync
+	mkdirSync,
+	readFileSync,
+	writeFileSync,
+	renameSync
 } from 'fs';
 
-import {Context, Option} from './types';
-import {getOptions} from './options';
-import {stringRegex, importRegex, firstEmptyLineRegex} from './regex';
-import {formatIndexFile, formatImportPath, formatCssImport} from './format';
+import { Context, Option } from './types';
+import { getOptions } from './options';
+import { stringRegex, importRegex, firstEmptyLineRegex } from './regex';
+import { formatIndexFile, formatImportPath, formatImportInComponent, formatImportComponent } from './format';
 
 const createEmptyFolder = (c: Context) => {
 	mkdirSync(c.folderPath);
@@ -31,12 +31,15 @@ const updateLocalImports = (c: Context, o: Option[]) => {
 		const newPath = match.replace(stringRegex, formatImportPath);
 		return newPath;
 	});
-	const importCss = o.some(option => option.id === 'css_module');
-	if (importCss) {
-		updatedText = updatedText.replace(firstEmptyLineRegex, () => {
-			return formatCssImport(c.fileName);
-		});
-	}
+
+	o.forEach(option => {
+		if (option.importInComponentName && option.createFile) {
+			updatedText = updatedText.replace(firstEmptyLineRegex, () => {
+				return formatImportInComponent(option.importInComponentName, option.createFile, c.fileName, c.filePath);
+			});
+		}
+	})
+
 	writeFileSync(c.newPath, updatedText);
 };
 
@@ -45,7 +48,9 @@ const createOptionalFiles = (c: Context, o: Option[]) => {
 		if (option.createFile) {
 			const name = option.createFile;
 			const path = c.folderPath + '/' + name;
-			writeFileSync(path, '');
+
+			const fileContent = option.importComponent ? formatImportComponent(c.fileName) : '';
+			writeFileSync(path, fileContent);
 		}
 	});
 };
@@ -72,7 +77,7 @@ const showOptions = (context: Context) => {
 export const init = (event: vscode.Uri) => {
 	const path = event.fsPath;
 	const filePath = path.split('.').pop() || '';
-	const folderPath = path.split('.').slice(0,-1).join('.');
+	const folderPath = path.split('.').slice(0, -1).join('.');
 	const fileName = folderPath.split('/').pop() || '';
 	const newPath = folderPath + '/' + fileName + '.' + filePath;
 
@@ -83,10 +88,10 @@ export const init = (event: vscode.Uri) => {
 		fileName,
 		newPath
 	};
-	
-   showOptions(context).then((selectedOptions) => {
-   	if (selectedOptions) {
-      	createFolder(context, selectedOptions);
-      }
-   });
+
+	showOptions(context).then((selectedOptions) => {
+		if (selectedOptions) {
+			createFolder(context, selectedOptions);
+		}
+	});
 };
