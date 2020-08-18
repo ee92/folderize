@@ -34,11 +34,16 @@ const updateLocalImports = (c: Context, o: Option[]) => {
 
 	o.forEach(option => {
 		if (option.importInComponentName && option.createFile) {
-			updatedText = updatedText.replace(firstEmptyLineRegex, () => {
-				return formatImportInComponent(option.importInComponentName, option.createFile, c.fileName, c.filePath);
-			});
+			const lineToAdd = formatImportInComponent(
+				option.importInComponentName,
+				option.createFile,
+				c.fileName,
+				c.filePath,
+				!updatedText
+			);
+			updatedText = !updatedText ? lineToAdd : updatedText.replace(firstEmptyLineRegex, lineToAdd);
 		}
-	})
+	});
 
 	writeFileSync(c.newPath, updatedText);
 };

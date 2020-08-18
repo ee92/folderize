@@ -29,4 +29,4 @@ export const presets = [
         'createFile': '{fileName}.styles.{ext}',
         'importInComponentName': 'styles'
     },
-]
+];
